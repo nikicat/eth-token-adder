@@ -1,6 +1,6 @@
-# evm-token-adder
+# symbtc-ui
 
-This web app allows to add any Ethereum token to you wallet with a custom icon.
+This is web UI for interacting with Symbiois BTC <-> EVM bridge.
 
 ## Developing
 

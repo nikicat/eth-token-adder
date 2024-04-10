@@ -1,37 +1,32 @@
 <script>
-	import { onMount } from 'svelte';
-	import TokenAdder from './TokenAdder.svelte';
-	import {
-		connected,
-		chainId,
-		signerAddress,
-		defaultEvmStores as evm
-	} from 'svelte-ethers-store';
+	import PortalInfo from '$lib/PortalInfo.svelte'
+	import SymBtcInfo from '$lib/SymBtcInfo.svelte'
+	import WalletInfo from '$lib/WalletInfo.svelte'
+	// @ts-expect-error
+	import { connected, chainId, chainData } from 'svelte-ethers-store'
 
-	onMount(evm.setProvider);
+	const SEPOLIA_CHAIN_ID = 11155111
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>SymBTC bridge</title>
+	<meta name="description" content="SymBTC bridge" />
 </svelte:head>
 
-<section>
-	{#if !$connected}
-		<p>My application is not yet connected</p>
-	{:else}
-		<p>account: {$signerAddress}</p>
-		<p>chainId: {$chainId}</p>
+<section class="flex flex-col items-center gap-8">
+	<PortalInfo />
+	{#if $connected}
+		{#if $chainId !== SEPOLIA_CHAIN_ID}
+			<p>
+				Your are connected to the wrong network ("{$chainData.name}")". Please connect to the
+				testnet Sepolia.
+			</p>
+		{:else}
+			<WalletInfo />
+			<SymBtcInfo />
+		{/if}
 	{/if}
-	<TokenAdder />
 </section>
 
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
 </style>

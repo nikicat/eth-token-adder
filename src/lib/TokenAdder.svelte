@@ -1,5 +1,10 @@
 <script lang="ts">
 	import { provider } from 'svelte-ethers-store';
+	import { Provider } from '@ethersproject/providers';
+
+	interface ProviderWithSend extends Provider {
+		send(method: string, args: any): Promise<any>;
+	}
 
 	let tokenAddress: string = '0xF0CB8795274ca3b22e175283E2e07951Ccaf3BEF';
 	let tokenImage: string;
@@ -7,7 +12,7 @@
 
 	async function addToken() {
 		try {
-			const wasAdded = await $provider.send('wallet_watchAsset', {
+			const wasAdded = await ($provider as ProviderWithSend).send('wallet_watchAsset', {
 				type: 'ERC20',
 				options: {
 					address: tokenAddress,
@@ -56,10 +61,10 @@
 	<button on:click={addToken}>Add to Metamask</button>
 </div>
 {#if error}
-    <div>
-        <p>{error.code}: {error.message}</p>
-        <pre>{error.stack}</pre>
-    </div>
+	<div>
+		<p>{error.code}: {error.message}</p>
+		<pre>{error.stack}</pre>
+	</div>
 {/if}
 
 <style>
@@ -71,10 +76,10 @@
 	img {
 		width: 10em;
 	}
-    pre {
-        font-size: small;
-        line-height: 2em;
-        background-color: black;
-        color: darkgreen;
-    }
+	pre {
+		font-size: small;
+		line-height: 2em;
+		background-color: black;
+		color: darkgreen;
+	}
 </style>
