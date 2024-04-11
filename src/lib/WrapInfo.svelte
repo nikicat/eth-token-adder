@@ -8,7 +8,7 @@
 </script>
 
 <div>
-	{#await getWrap(tx) then wrap}
+	{#await $getWrap(tx) then wrap}
 		<Labeled label="Amount">
 			<Satoshi value={wrap.data.data.wrapInfo.value} />
 		</Labeled>

@@ -1,4 +1,4 @@
-import { readable, derived, type Readable } from 'svelte/store';
+import { derived, type Readable } from 'svelte/store';
 import { defaultEvmStores as evm, contracts } from 'svelte-ethers-store';
 import { Contract } from '@ethersproject/contracts';
 import { abi as SymBtcAbi } from '$lib/abi/SymBtc.json';

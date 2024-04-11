@@ -1,18 +1,19 @@
 <script lang="ts">
+	import { slide } from 'svelte/transition'
 	import { Card, Spinner } from 'flowbite-svelte'
 	import { RefreshOutline } from 'flowbite-svelte-icons'
-	import { fetchAddressTxs } from './forwarder-store'
-	import WrapInfo from './WrapInfo.svelte'
-	import { asyncReadable } from '@square/svelte-store'
+	import { asyncDerived } from '@square/svelte-store'
+
+	import { fetchAddressTxs } from '$lib/forwarder-store'
+	import WrapInfo from '$lib/WrapInfo.svelte'
 	import IconButton from '$lib/IconButton.svelte'
-	import { slide } from 'svelte/transition'
 
 	export let address: string
 
-	const txs = asyncReadable(
-		[],
-		async () => {
-			return (await fetchAddressTxs(address)).data.data.transactions
+	const txs = asyncDerived(
+		[fetchAddressTxs],
+		async ([$fetchAddressTxs]) => {
+			return (await $fetchAddressTxs(address)).data.data.transactions
 		},
 		{ reloadable: true, trackState: true }
 	)

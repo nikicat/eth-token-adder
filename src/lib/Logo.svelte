@@ -4,7 +4,7 @@
 </script>
 
 <div {...$$props}>
-	<img src={symbiosis} alt="Symbiosis" />
+	<img src={symbiosis} alt="Symbiosis" class="octopus "/>
 	<img src={bitcoin} alt="bitcoin" class="bitcoin" />
 </div>
 
@@ -19,11 +19,17 @@
 	div img {
 		max-width: 100%;
 	}
+	
+	.octopus {
+		border-radius: 50%;
+		clip-path: polygon(0 0, 0 100%, 100% 0);
+	}
 
 	.bitcoin {
-		width: 50%;
+		width: 100%;
 		position: absolute;
 		bottom: 0%;
 		right: 0%;
+		clip-path: polygon(0 100%, 100% 0, 100% 100%);
 	}
 </style>

@@ -10,3 +10,5 @@ node_modules
 .output
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+/src/lib/abi/
+/src/lib/symbiosis-contracts-types/

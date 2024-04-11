@@ -8,8 +8,7 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write .",
-		"deploy": "gh-pages -d build -t true"
+		"format": "prettier --write ."
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",
@@ -41,7 +40,8 @@
 	"type": "module",
 	"dependencies": {
 		"@openzeppelin/contracts": "^5.0.2",
-		"@square/svelte-store": "file:../svelte-store",
+		"@square/svelte-store": "^1.0.18",
+		"@sveltejs/adapter-node": "^5.0.1",
 		"@sveltejs/adapter-static": "^3.0.1",
 		"flowbite-svelte-icons": "^1.5.0",
 		"openapi-typescript-fetch": "^2.0.0",

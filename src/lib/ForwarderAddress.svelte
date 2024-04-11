@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Input, Label } from 'flowbite-svelte'
-	import type { BtcforwarderAddressInfo } from './forwarder-api'
+	import { Input } from 'flowbite-svelte'
+	import type { BtcforwarderAddressInfo } from '$lib/forwarder-api'
 	import Satoshi from '$lib/Satoshi.svelte'
 	import Timer from '$lib/Timer.svelte'
 	import WrapTxs from '$lib/WrapTxs.svelte'

@@ -2,7 +2,7 @@
 	import { Button, Card, Input, Spinner } from 'flowbite-svelte'
 	import { initiateWrap, type WrapResponse } from './forwarder-store'
 	import { signerAddress } from 'svelte-ethers-store'
-	import { persisted } from '@square/svelte-store'
+	import { persisted, type Writable, get } from '@square/svelte-store'
 	import type { BtcforwarderAddressInfo } from './forwarder-api'
 	import ForwarderAddress from './ForwarderAddress.svelte'
 	import { TrashBinOutline } from 'flowbite-svelte-icons'
@@ -10,21 +10,55 @@
 	import Labeled from '$lib/Labeled.svelte'
 	import { slide } from 'svelte/transition'
 
-	let revealFeeLimit: number = 1000
-	const addresses = persisted([] as BtcforwarderAddressInfo[], 'forwarder-addresses')
-	console.log('addresses', $addresses)
-	let wrapRequest: Promise<WrapResponse> | null = null
-	async function wrapClicked() {
-		wrapRequest = initiateWrap({
-			commitFee: 0,
-			info: {
-				to: to,
+	function fixPersisted<T>(initial: T, store: Writable<T>): Writable<T> {
+		return {
+			subscribe: (run: (value: any) => void, invalidate?) => {
+				return store.subscribe((value: any) => {
+					if (value !== undefined) {
+						run(value)
+					} else {
+						run(initial)
+					}
+				}, invalidate)
 			},
-			revealFeeLimit: revealFeeLimit,
-		})
-		const wrapResponse = await wrapRequest
+			set: store.set,
+			update: store.update,
+		}
+	}
+
+	let revealFeeLimit: number = 1000
+	const addresses = fixPersisted(
+		[],
+		persisted([] as BtcforwarderAddressInfo[], 'forwarder-addresses')
+	)
+	let wrapRequest: Promise<WrapResponse> | null = null
+	let err: string
+	interface ResponseError extends Response {
+		error: {
+			message: string
+		}
+	}
+	let respErr: ResponseError
+	async function wrapClicked() {
+		try {
+			wrapRequest = $initiateWrap({
+				commitFee: 0,
+				info: {
+					to: to,
+				},
+				revealFeeLimit: revealFeeLimit,
+			})
+			const wrapResponse = await wrapRequest
+			$addresses = [wrapResponse.data.data, ...$addresses]
+		} catch (e) {
+			console.log('error', e)
+			if (e instanceof Response) {
+				respErr = e as ResponseError
+			} else {
+				err = JSON.stringify(e)
+			}
+		}
 		wrapRequest = null
-		$addresses = [wrapResponse.data.data, ...$addresses]
 	}
 	$: to = $signerAddress
 </script>
@@ -46,22 +80,31 @@
 		{/if}
 		Get new address
 	</Button>
+	<div class="text-red-800">
+		{#if respErr}
+			<p>request failed: <a href={respErr.url}>{respErr.url}</a> returned</p>
+			<pre>[{respErr.status}] {respErr.statusText}</pre>
+			<pre>{respErr.error.message}</pre>
+		{:else if err}
+			{err}
+		{/if}
+	</div>
 	<Labeled label="Addresses">
 		<div class="flex flex-col gap-4">
-		{#each $addresses as info (info.revealAddress)}
-			<div transition:slide class="w-full">
-				<Card size="lg">
-					<ForwarderAddress addressInfo={info}>
-						<IconButton
-							on:click={() => ($addresses = $addresses.filter((info_) => info_ != info))}
-							title="forget"
-						>
-							<TrashBinOutline size="xs" />
-						</IconButton>
-					</ForwarderAddress>
-				</Card>
-			</div>
-		{/each}
-	</div>
+			{#each $addresses as info (info.revealAddress)}
+				<div transition:slide class="w-full">
+					<Card size="lg">
+						<ForwarderAddress addressInfo={info}>
+							<IconButton
+								on:click={() => ($addresses = $addresses.filter((info_) => info_ != info))}
+								title="forget"
+							>
+								<TrashBinOutline size="xs" />
+							</IconButton>
+						</ForwarderAddress>
+					</Card>
+				</div>
+			{/each}
+		</div>
 	</Labeled>
 </Card>
