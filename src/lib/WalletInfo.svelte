@@ -8,7 +8,7 @@
 		TableBodyRow,
 		Card
 	} from 'flowbite-svelte';
-	import { chainId, signerAddress, defaultEvmStores as evm } from 'svelte-ethers-store';
+	import { chainId, signerAddress } from 'svelte-ethers-store';
 
 	const keyClass = 'px-6 py-4 whitespace-nowrap font-medium text-right';
 </script>

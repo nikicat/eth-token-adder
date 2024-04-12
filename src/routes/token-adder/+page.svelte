@@ -1,12 +1,6 @@
 <script>
-	import { onMount } from 'svelte';
-	import TokenAdder from '$lib/TokenAdder.svelte';
-	import {
-		connected,
-		defaultEvmStores as evm
-	} from 'svelte-ethers-store';
-
-	onMount(evm.setProvider);
+	import TokenAdder from '$lib/TokenAdder.svelte'
+	import { connected } from 'svelte-ethers-store'
 </script>
 
 <svelte:head>
@@ -15,9 +9,9 @@
 </svelte:head>
 
 <section>
-    {#if $connected}
-	<TokenAdder />
-    {/if}
+	{#if $connected}
+		<TokenAdder />
+	{/if}
 </section>
 
 <style>

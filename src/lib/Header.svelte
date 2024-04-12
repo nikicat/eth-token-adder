@@ -15,7 +15,7 @@
 		</span>
 	</NavBrand>
 	<NavUl>
-		<NavLi href="{base}">Info</NavLi>
+		<NavLi href="{base}/">Info</NavLi>
 		<NavLi href="{base}/wrap">Wrap</NavLi>
 		<NavLi href="{base}/token-adder">Token Adder</NavLi>
 		<NavLi href="{base}/burn">Burn</NavLi>

@@ -2,35 +2,16 @@
 	import { Button, Card, Input, Spinner } from 'flowbite-svelte'
 	import { initiateWrap, type WrapResponse } from './forwarder-store'
 	import { signerAddress } from 'svelte-ethers-store'
-	import { persisted, type Writable, get } from '@square/svelte-store'
 	import type { BtcforwarderAddressInfo } from './forwarder-api'
 	import ForwarderAddress from './ForwarderAddress.svelte'
 	import { TrashBinOutline } from 'flowbite-svelte-icons'
 	import IconButton from '$lib/IconButton.svelte'
 	import Labeled from '$lib/Labeled.svelte'
 	import { slide } from 'svelte/transition'
-
-	function fixPersisted<T>(initial: T, store: Writable<T>): Writable<T> {
-		return {
-			subscribe: (run: (value: any) => void, invalidate?) => {
-				return store.subscribe((value: any) => {
-					if (value !== undefined) {
-						run(value)
-					} else {
-						run(initial)
-					}
-				}, invalidate)
-			},
-			set: store.set,
-			update: store.update,
-		}
-	}
+	import { fixPersisted } from '$lib/utils'
 
 	let revealFeeLimit: number = 1000
-	const addresses = fixPersisted(
-		[],
-		persisted([] as BtcforwarderAddressInfo[], 'forwarder-addresses')
-	)
+	const addresses = fixPersisted([] as BtcforwarderAddressInfo[], 'forwarder-addresses')
 	let wrapRequest: Promise<WrapResponse> | null = null
 	let err: string
 	interface ResponseError extends Response {
