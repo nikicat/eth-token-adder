@@ -1,20 +1,17 @@
 <script lang="ts">
-	import { slide } from 'svelte/transition'
-	import { Card, Input } from 'flowbite-svelte'
-	import { TrashBinOutline } from 'flowbite-svelte-icons'
+	import {  Input } from 'flowbite-svelte'
 	import { initiateWrap } from '$lib/forwarder-store'
 	import { type BtcforwarderAddressInfo } from '$lib/forwarder-api'
-	import ForwarderAddress from './ForwarderAddress.svelte'
-	import IconButton from '$lib/IconButton.svelte'
 	import Labeled from '$lib/Labeled.svelte'
 	import ReloadableCard from '$lib/ReloadableCard.svelte'
 	import { signer } from '$lib/contracts'
 	import { ethers } from 'ethers'
 	import ActionWithError from './ActionWithError.svelte'
-	import type { Writable } from '@square/svelte-store'
+	import { type Writable } from '@square/svelte-store'
 
 	let revealFeeLimit: number = 1000
 	export let addresses: Writable<BtcforwarderAddressInfo[]>
+	export let to: string
 	async function wrap() {
 		const wrapResponse = await $initiateWrap({
 			commitFee: 0,
@@ -25,7 +22,6 @@
 		})
 		$addresses = [wrapResponse.data.data, ...$addresses]
 	}
-	$: to = $signer?.address || ''
 </script>
 
 <ReloadableCard title="Wrap" store={signer}>

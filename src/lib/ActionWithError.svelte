@@ -5,14 +5,16 @@
 	export let disabled = false
 
 	let request: Promise<unknown> | null = null
-	let err: string
+	let err: string | null
 	interface ResponseError extends Response {
 		error: {
 			message: string
 		}
 	}
-	let respErr: ResponseError
+	let respErr: ResponseError | null
 	async function clicked() {
+		err = null
+		respErr = null
 		try {
 			await action()
 		} catch (e) {
@@ -27,13 +29,13 @@
 	}
 </script>
 
-<Button on:click={clicked} disabled={request !== null && !disabled} class="w-48 mt-8">
+<Button on:click={clicked} disabled={request !== null || disabled} class="mt-8 w-48">
 	{#if request !== null}
 		<Spinner size={4} class="me-4" />
 	{/if}
 	<slot />
 </Button>
-<div class="text-red-800 dark:text-red-400 w-full overflow-scroll">
+<div class="w-full overflow-scroll text-red-800 dark:text-red-400">
 	{#if respErr}
 		<p>action failed: <a href={respErr.url}>{respErr.url}</a> returned</p>
 		<pre>[{respErr.status}] {respErr.statusText}</pre>
