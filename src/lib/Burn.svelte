@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Input, Button } from 'flowbite-svelte'
+	import { Input } from 'flowbite-svelte'
 	import { asyncDerived } from '@square/svelte-store'
 
 	import { symbtc, synthesis, signerTokenBalance } from '$lib/contracts'
@@ -9,8 +9,9 @@
 	import { getPkScript } from '$lib/bitcoin'
 	import { info } from '$lib/forwarder-store'
 	import ReloadableCard from '$lib/ReloadableCard.svelte'
+	import ActionWithError from '$lib/ActionWithError.svelte'
 
-	let amount: number = 4000
+	let amount: number = 4000 // satoshi
 	let to: string = 'tb1qkpsdsmlws0k4cwdz8p6k2s6wghsypgfg3fs55y'
 	const clientId = '0x1234560000000000000000000000000000000000000000000000000000000000'
 </script>
@@ -30,16 +31,16 @@
 	<Labeled label="To (Bitcoin Address)">
 		<Input bind:value={to} />
 	</Labeled>
-	<Button
-		on:click={async () =>
+	<ActionWithError
+		action={async () =>
 			$synthesis.burnSyntheticTokenBTC(
 				0,
 				amount,
 				getPkScript(to, $info.chain),
-				await $symbtc.btcTokenAddress(),
+				await $symbtc.getSyntToken(),
 				clientId
 			)}
 	>
 		Unwrap
-	</Button>
+	</ActionWithError>
 </ReloadableCard>

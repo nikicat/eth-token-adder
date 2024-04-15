@@ -14,7 +14,6 @@
 	<PortalInfo />
 	<WalletInfo />
 	<SymBtcInfo />
-	<UnwrapLog />
 </section>
 
 <style>

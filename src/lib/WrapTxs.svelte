@@ -20,7 +20,7 @@
 </script>
 
 <ReloadableCard title="Transactions" store={txs}>
-	<ul>
+	<ul class="w-full">
 		{#each $txs as tx (tx.commitTx)}
 			<li transition:slide>
 				<Card size="lg">

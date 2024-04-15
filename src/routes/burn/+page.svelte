@@ -1,5 +1,6 @@
 <script>
 	import Burn from '$lib/Burn.svelte'
+	import UnwrapLog from '$lib/UnwrapLog.svelte'
 </script>
 
 <svelte:head>
@@ -7,3 +8,4 @@
 </svelte:head>
 
 <Burn />
+<UnwrapLog />

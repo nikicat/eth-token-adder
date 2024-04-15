@@ -8,11 +8,20 @@ export const initiateWrap = derived(forwarderApi, $forwarderApi => $forwarderApi
 export type WrapResponse = HttpResponse<BtcforwarderWrapResponse, WebapiResponse>
 export const fetchAddressTxs = derived(forwarderApi, $forwarderApi => $forwarderApi.address.addressDetail)
 
-const infoResponse = asyncDerived(
+const portalInfoResponse = asyncDerived(
     forwarderApi,
     $forwarderApi => $forwarderApi.info.infoList(),
     { reloadable: true, trackState: true },
-);
+)
 
-export const info = asyncDerived(infoResponse, async resp => resp?.data.data, { reloadable: true, trackState: true })
-export const version = asyncDerived(infoResponse, async resp => resp?.headers.get('App-Version'), { reloadable: true, trackState: true })
+export const info = asyncDerived(portalInfoResponse, async resp => resp?.data.data, { reloadable: true, trackState: true })
+export const version = asyncDerived(portalInfoResponse, async resp => resp?.headers.get('App-Version'), { reloadable: true, trackState: true })
+
+const portalStateResponse = asyncDerived(
+    forwarderApi,
+    $forwarderApi => $forwarderApi.portal.portalList(),
+    { reloadable: true, trackState: true },
+)
+
+export const finalizedState = asyncDerived(portalStateResponse, async resp => resp?.data.finalizedState, { reloadable: true, trackState: true })
+export const pendingState = asyncDerived(portalStateResponse, async resp => resp?.data.pendingState, { reloadable: true, trackState: true })

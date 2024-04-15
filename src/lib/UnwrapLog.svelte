@@ -21,7 +21,7 @@
 </script>
 
 <ReloadableCard title="Unwraps" store={events}>
-	{#each $events as event}
+	{#each $events.reverse() as event (event.args.burnSerial)}
 		<Card size="lg" class="mt-4">
 			<h3>#{event.args.burnSerial}</h3>
 			{#await event.getBlock() then block}

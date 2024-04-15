@@ -1,20 +1,21 @@
 <script lang="ts">
-	import { Card, Spinner } from 'flowbite-svelte'
+	import { Spinner } from 'flowbite-svelte'
 	import ReloadButton from '$lib/ReloadButton.svelte'
-	import { get, type Loadable } from '@square/svelte-store'
+	import { type Loadable } from '@square/svelte-store'
+	import MyCard from '$lib/MyCard.svelte'
 
 	export let title: string
 	export let store: Loadable<any>
 	let state = store.state
 </script>
 
-<Card size="lg" class="flex flex-col items-center">
-	<h3 class="flex flex-row items-center justify-between text-xl pb-6 w-full">
+<MyCard>
+	<svelte:fragment slot="title">
 		{title}
 		{#if store.reload}
 			<ReloadButton on:click={() => store.reload?.()} size="xs" />
 		{/if}
-	</h3>
+	</svelte:fragment>
 	{#await store.load()}
 		<Spinner />
 	{:then}
@@ -24,4 +25,4 @@
 			<slot />
 		{/if}
 	{/await}
-</Card>
+</MyCard>

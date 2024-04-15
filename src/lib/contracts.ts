@@ -26,13 +26,13 @@ export const symbtc = derived([provider, symbtcAddress], ([$provider, $symbtcAdd
     return SymBtc__factory.connect($symbtcAddress, $provider)
 })
 
-export const synthesis = asyncDerived([provider, symbtc], async ([$provider, $symbtc]) => {
-    const synthesis = await $symbtc.synthesis()
-    return Synthesis__factory.connect(synthesis, $provider)
-}, {reloadable: true, trackState: true})
-
 export const signer = asyncDerived(browserProvider, async ($browserProvider) => {
     return await $browserProvider?.getSigner()
+}, {reloadable: true, trackState: true})
+
+export const synthesis = asyncDerived([signer, symbtc], async ([$signer, $symbtc]) => {
+    const synthesis = await $symbtc.synthesis()
+    return Synthesis__factory.connect(synthesis, $signer)
 }, {reloadable: true, trackState: true})
 
 const btcToken = asyncDerived([provider, symbtc], async ([$provider, $symbtc]) => {
