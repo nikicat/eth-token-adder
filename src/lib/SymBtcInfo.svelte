@@ -1,63 +1,71 @@
 <script lang="ts">
-	import { Table, TableBody, TableBodyCell, TableBodyRow, Card, Spinner } from 'flowbite-svelte'
+	import { Table, TableBody, TableBodyCell, TableBodyRow } from 'flowbite-svelte'
 	import EtherscanLink from '$lib/EtherscanLink.svelte'
-	import { symbtc, signerTokenBalance, btcToken } from '$lib/contracts'
+	import { symbtc, signerTokenBalance } from '$lib/contracts'
 	import Satoshi from '$lib/Satoshi.svelte'
+	import ReloadableCard from '$lib/ReloadableCard.svelte'
+	import { asyncDerived } from '@square/svelte-store'
 
 	const keyClass = 'px-6 py-4 whitespace-nowrap font-medium text-right'
 </script>
 
-<Card size="lg">
-	<h3>SymBTC info</h3>
+<ReloadableCard
+	title="SymBTC info"
+	store={asyncDerived([symbtc, signerTokenBalance], async () => {})}
+>
 	<Table>
 		<TableBody tableBodyClass="divide-y">
-			{#await btcToken.load()}
-				<Spinner />
-			{:then}
-				<TableBodyRow>
-					<TableBodyCell tdClass={keyClass}>SymBTC Contract</TableBodyCell>
-					<TableBodyCell>
-						<EtherscanLink address={$symbtc.address} />
-					</TableBodyCell>
-				</TableBodyRow>
-				{#await $symbtc.bridge() then bridge}
-					<TableBodyRow>
-						<TableBodyCell tdClass={keyClass}>Bridge contract</TableBodyCell>
-						<TableBodyCell>
-							<EtherscanLink address={bridge} />
-						</TableBodyCell>
-					</TableBodyRow>
-				{/await}
-				{#await $symbtc.synthesis() then synthesis}
-					<TableBodyRow>
-						<TableBodyCell tdClass={keyClass}>Synthesis contract</TableBodyCell>
-						<TableBodyCell><EtherscanLink address={synthesis} /></TableBodyCell>
-					</TableBodyRow>
-				{/await}
-				<TableBodyRow>
-					<TableBodyCell tdClass={keyClass}>BTC token</TableBodyCell>
-					<TableBodyCell><EtherscanLink address={$btcToken.address} type="token" /></TableBodyCell>
-				</TableBodyRow>
-				<TableBodyRow>
-					<TableBodyCell tdClass={keyClass}>BTC token balance</TableBodyCell>
-					<TableBodyCell><Satoshi value={$signerTokenBalance} /></TableBodyCell>
-				</TableBodyRow>
+			<TableBodyRow>
+				<TableBodyCell tdClass={keyClass}>SymBTC Contract</TableBodyCell>
+				<TableBodyCell>
+					{#await $symbtc.getAddress() then address}
+						<EtherscanLink value={address} />
+					{/await}
+				</TableBodyCell>
+			</TableBodyRow>
+			<TableBodyRow>
+				<TableBodyCell tdClass={keyClass}>Bridge contract</TableBodyCell>
+				<TableBodyCell>
+					{#await $symbtc.bridge() then bridge}
+						<EtherscanLink value={bridge} />
+					{/await}
+				</TableBodyCell>
+			</TableBodyRow>
+			<TableBodyRow>
+				<TableBodyCell tdClass={keyClass}>Synthesis contract</TableBodyCell>
+				<TableBodyCell>
+					{#await $symbtc.synthesis() then synthesis}
+						<EtherscanLink value={synthesis} />
+					{/await}
+				</TableBodyCell>
+			</TableBodyRow>
+			<TableBodyRow>
+				<TableBodyCell tdClass={keyClass}>BTC token</TableBodyCell>
+				<TableBodyCell>
+					{#await $symbtc.btcTokenAddress() then address}
+						<EtherscanLink value={address} type="token" />
+					{/await}
+				</TableBodyCell>
+			</TableBodyRow>
+			<TableBodyRow>
+				<TableBodyCell tdClass={keyClass}>BTC token balance</TableBodyCell>
+				<TableBodyCell><Satoshi value={$signerTokenBalance} /></TableBodyCell>
+			</TableBodyRow>
+			<TableBodyRow>
+				<TableBodyCell tdClass={keyClass}>Total Supply</TableBodyCell>
 				{#await $symbtc.getBtcTotalSupply() then totalSupply}
-					<TableBodyRow>
-						<TableBodyCell tdClass={keyClass}>Total Supply</TableBodyCell>
-						<TableBodyCell>{totalSupply} sat</TableBodyCell>
-					</TableBodyRow>
+					<TableBodyCell>{totalSupply} sat</TableBodyCell>
 				{/await}
+			</TableBodyRow>
+			<TableBodyRow>
+				<TableBodyCell tdClass={keyClass}>BTC chain ID</TableBodyCell>
 				{#await $symbtc.btcChainId() then btcChainId}
-					<TableBodyRow>
-						<TableBodyCell tdClass={keyClass}>BTC chain ID</TableBodyCell>
-						<TableBodyCell>{btcChainId}</TableBodyCell>
-					</TableBodyRow>
+					<TableBodyCell>{btcChainId}</TableBodyCell>
 				{/await}
-			{/await}
+			</TableBodyRow>
 		</TableBody>
 	</Table>
-</Card>
+</ReloadableCard>
 
 <style>
 </style>

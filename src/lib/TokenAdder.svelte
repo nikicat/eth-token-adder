@@ -1,70 +1,68 @@
 <script lang="ts">
-	import { provider } from 'svelte-ethers-store';
-	import { Provider } from '@ethersproject/providers';
+	import { type BrowserProvider } from 'ethers'
+	import { browserProvider } from '$lib/contracts'
 
-	interface ProviderWithSend extends Provider {
-		send(method: string, args: any): Promise<any>;
-	}
+	let tokenAddress: string = '0xF0CB8795274ca3b22e175283E2e07951Ccaf3BEF'
+	let tokenImage: string
+	let error: { code: string; message: string; stack: string }
 
-	let tokenAddress: string = '0xF0CB8795274ca3b22e175283E2e07951Ccaf3BEF';
-	let tokenImage: string;
-	let error: { code: string; message: string; stack: string };
-
-	async function addToken() {
+	async function addToken($browserProvider: BrowserProvider) {
 		try {
-			const wasAdded = await ($provider as ProviderWithSend).send('wallet_watchAsset', {
+			const wasAdded = await $browserProvider.send('wallet_watchAsset', {
 				type: 'ERC20',
 				options: {
 					address: tokenAddress,
-					image: tokenImage
-				}
-			});
+					image: tokenImage,
+				},
+			})
 
 			if (wasAdded) {
-				console.log(`Thanks for your interest!`);
+				console.log(`Thanks for your interest!`)
 			} else {
-				console.log(`Your loss!`);
+				console.log(`Your loss!`)
 			}
 		} catch (exc) {
-			console.log('exc', exc);
-			error = exc as { code: string; message: string; stack: string };
+			console.log('exc', exc)
+			error = exc as { code: string; message: string; stack: string }
 		}
 	}
 
 	function onImageChange(e: Event) {
-		const target = e.target as HTMLInputElement;
-		const file = target?.files?.[0];
-		const reader = new FileReader();
+		const target = e.target as HTMLInputElement
+		const file = target?.files?.[0]
+		const reader = new FileReader()
 		reader.onloadend = () => {
-			tokenImage = reader.result as string;
-		};
+			tokenImage = reader.result as string
+		}
 
 		if (file) {
-			reader.readAsDataURL(file);
+			reader.readAsDataURL(file)
 		} else {
-			tokenImage = '';
+			tokenImage = ''
 		}
 	}
 </script>
 
-<div class="form">
-	<label>
-		Token Address
-		<input type="text" bind:value={tokenAddress} placeholder="Token Address" />
-	</label>
-	<label>
-		Token Logo URL/File
-		<input type="file" on:change={onImageChange} />
-		<input type="text" bind:value={tokenImage} placeholder="Logo URL" />
-	</label>
-	<img src={tokenImage} alt="Token Logo" />
-	<button on:click={addToken}>Add to Metamask</button>
-</div>
-{#if error}
-	<div>
-		<p>{error.code}: {error.message}</p>
-		<pre>{error.stack}</pre>
+{#if $browserProvider}
+	<div class="form">
+		<label>
+			Token Address
+			<input type="text" bind:value={tokenAddress} placeholder="Token Address" />
+		</label>
+		<label>
+			Token Logo URL/File
+			<input type="file" on:change={onImageChange} />
+			<input type="text" bind:value={tokenImage} placeholder="Logo URL" />
+		</label>
+		<img src={tokenImage} alt="Token Logo" />
+		<button on:click={() => addToken($browserProvider)}>Add to Metamask</button>
 	</div>
+	{#if error}
+		<div>
+			<p>{error.code}: {error.message}</p>
+			<pre>{error.stack}</pre>
+		</div>
+	{/if}
 {/if}
 
 <style>

@@ -24,10 +24,8 @@
 		<Satoshi value={addressInfo.revealFeeLimit} />
 	</Labeled>
 	<Labeled label="Destination">
-		<EtherscanLink type="address" address={addressInfo.info.to} id="eth" />
+		<EtherscanLink type="address" value={addressInfo.info.to} id="eth" />
 	</Labeled>
-	<Labeled label="Transactions">
-		<WrapTxs address={addressInfo.revealAddress} />
-	</Labeled>
+	<WrapTxs address={addressInfo.revealAddress} />
 	<slot />
 </div>

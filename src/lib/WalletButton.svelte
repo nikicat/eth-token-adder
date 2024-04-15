@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { Button } from 'flowbite-svelte';
-	import { signerAddress } from 'svelte-ethers-store';
-    // @ts-expect-error ts(7016)
-	import { Jazzicon } from 'svelte-ethers-store/components';
+	import { Button } from 'flowbite-svelte'
+	import Jazzicon from '$lib/Jazzicon.svelte'
+	import { signer } from '$lib/contracts'
 </script>
 
-{#if $signerAddress}
-	<Button class="gap-4">
-		<Jazzicon address={$signerAddress} />
-		{$signerAddress.substring(0, 10)}
-	</Button>
-{:else}
-	<Button>Connect Wallet</Button>
-{/if}
+{#await signer.load() then}
+	{#if $signer}
+		<Button class="gap-4">
+			<Jazzicon address={$signer.address} />
+			{$signer.address.substring(0, 10)}
+		</Button>
+	{:else}
+		<Button>Connect Wallet</Button>
+	{/if}
+{/await}

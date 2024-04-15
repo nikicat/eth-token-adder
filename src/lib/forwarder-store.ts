@@ -11,8 +11,8 @@ export const fetchAddressTxs = derived(forwarderApi, $forwarderApi => $forwarder
 const infoResponse = asyncDerived(
     forwarderApi,
     $forwarderApi => $forwarderApi.info.infoList(),
-    { reloadable: true },
+    { reloadable: true, trackState: true },
 );
 
-export const info = asyncDerived(infoResponse, async resp => resp?.data.data)
-export const version = asyncDerived(infoResponse, async resp => resp?.headers.get('App-Version'))
+export const info = asyncDerived(infoResponse, async resp => resp?.data.data, { reloadable: true, trackState: true })
+export const version = asyncDerived(infoResponse, async resp => resp?.headers.get('App-Version'), { reloadable: true, trackState: true })

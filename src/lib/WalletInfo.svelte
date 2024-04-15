@@ -1,42 +1,37 @@
 <script lang="ts">
 	// @ts-expect-error
-	import { Balance, Jazzicon } from 'svelte-ethers-store/components';
-	import {
-		Table,
-		TableBody,
-		TableBodyCell,
-		TableBodyRow,
-		Card
-	} from 'flowbite-svelte';
-	import { chainId, signerAddress } from 'svelte-ethers-store';
+	import { Jazzicon } from 'svelte-ethers-store/components'
+	import { Table, TableBody, TableBodyCell, TableBodyRow } from 'flowbite-svelte'
+	import { signer, provider } from '$lib/contracts'
+	import EtherscanLink from '$lib/EtherscanLink.svelte'
+	import ReloadableCard from '$lib/ReloadableCard.svelte'
 
-	const keyClass = 'px-6 py-4 whitespace-nowrap font-medium text-right';
+	const keyClass = 'px-6 py-4 whitespace-nowrap font-medium text-right'
 </script>
 
-<Card size="lg">
-	<h3>Wallet info</h3>
+<ReloadableCard title="Wallet info" store={signer}>
 	<Table>
 		<TableBody tableBodyClass="divide-y">
 			<TableBodyRow>
 				<TableBodyCell tdClass={keyClass}>Wallet Address</TableBodyCell>
 				<TableBodyCell>
-					<a
-						href="https://sepolia.etherscan.io/address/{$signerAddress}"
-						class="flex items-center gap-2"
-						target="_blank"
-					>
-						<Jazzicon address={$signerAddress} />{$signerAddress}</a
-					>
+					<EtherscanLink type="address" value={$signer.address}>
+						<Jazzicon address={$signer.address} />{$signer.address}
+					</EtherscanLink>
 				</TableBodyCell>
 			</TableBodyRow>
-			<TableBodyRow>
-				<TableBodyCell tdClass={keyClass}>ChainID</TableBodyCell>
-				<TableBodyCell>{$chainId}</TableBodyCell>
-			</TableBodyRow>
-			<TableBodyRow>
-				<TableBodyCell tdClass={keyClass}>Balance</TableBodyCell>
-				<TableBodyCell><Balance address={$signerAddress} /></TableBodyCell>
-			</TableBodyRow>
+			{#await $provider.getNetwork() then network}
+				<TableBodyRow>
+					<TableBodyCell tdClass={keyClass}>ChainID</TableBodyCell>
+					<TableBodyCell>{network.chainId}</TableBodyCell>
+				</TableBodyRow>
+			{/await}
+			{#await $provider.getBalance($signer) then balance}
+				<TableBodyRow>
+					<TableBodyCell tdClass={keyClass}>Balance</TableBodyCell>
+					<TableBodyCell>{balance}</TableBodyCell>
+				</TableBodyRow>
+			{/await}
 		</TableBody>
 	</Table>
-</Card>
+</ReloadableCard>

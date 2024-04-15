@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition'
-	import { Card, Spinner } from 'flowbite-svelte'
-	import { RefreshOutline } from 'flowbite-svelte-icons'
+	import { Card } from 'flowbite-svelte'
 	import { asyncDerived } from '@square/svelte-store'
 
 	import { fetchAddressTxs } from '$lib/forwarder-store'
 	import WrapInfo from '$lib/WrapInfo.svelte'
-	import IconButton from '$lib/IconButton.svelte'
+	import ReloadableCard from './ReloadableCard.svelte'
 
 	export let address: string
 
@@ -20,12 +19,7 @@
 	const txsState = txs.state
 </script>
 
-{#if $txsState?.isLoading || $txsState?.isReloading}
-	<Spinner />
-{:else if $txsState?.isLoaded}
-	<IconButton on:click={() => txs.reload?.()}>
-		<RefreshOutline size="xs" />
-	</IconButton>
+<ReloadableCard title="Transactions" store={txs}>
 	<ul>
 		{#each $txs as tx (tx.commitTx)}
 			<li transition:slide>
@@ -35,4 +29,4 @@
 			</li>
 		{/each}
 	</ul>
-{/if}
+</ReloadableCard>

@@ -1,46 +1,45 @@
 <script lang="ts">
-	import { Card, Input, Spinner, Button } from 'flowbite-svelte'
-	import { loadAll } from '@square/svelte-store'
-	import { synthesis, signerTokenBalance, btcToken } from '$lib/contracts'
+	import { Input, Button } from 'flowbite-svelte'
+	import { asyncDerived } from '@square/svelte-store'
+
+	import { symbtc, synthesis, signerTokenBalance } from '$lib/contracts'
 	import Labeled from '$lib/Labeled.svelte'
 	import Satoshi from '$lib/Satoshi.svelte'
 	import EtherscanLink from '$lib/EtherscanLink.svelte'
 	import { getPkScript } from '$lib/bitcoin'
 	import { info } from '$lib/forwarder-store'
+	import ReloadableCard from '$lib/ReloadableCard.svelte'
 
 	let amount: number = 4000
 	let to: string = 'tb1qkpsdsmlws0k4cwdz8p6k2s6wghsypgfg3fs55y'
 	const clientId = '0x1234560000000000000000000000000000000000000000000000000000000000'
 </script>
 
-<Card size="lg" class="flex flex-col gap-4">
-	<h3>Unwrap</h3>
-	{#await loadAll([synthesis, btcToken])}
-		<Spinner />
-	{:then}
-		<Labeled label="Synthesis address">
-			<EtherscanLink address={$synthesis.address} />
-		</Labeled>
-		<Labeled label="Wallet balance">
-			<Satoshi value={$signerTokenBalance} />
-		</Labeled>
-		<Labeled label="Amount">
-			<Input type="number" bind:value={amount} />
-		</Labeled>
-		<Labeled label="To (Bitcoin Address)">
-			<Input bind:value={to} />
-		</Labeled>
-		<Button
-			on:click={() =>
-				$synthesis.burnSyntheticTokenBTC(
-					0,
-					amount,
-					getPkScript(to, $info.chain),
-					$btcToken.address,
-					clientId,
-				)}
-		>
-			Unwrap
-		</Button>
-	{/await}
-</Card>
+<ReloadableCard title="Unwrap" store={asyncDerived([symbtc, synthesis, signerTokenBalance], async () => {})}>
+	<Labeled label="Synthesis address">
+		{#await $symbtc.synthesis() then address}
+			<EtherscanLink value={address} />
+		{/await}
+	</Labeled>
+	<Labeled label="Wallet balance">
+		<Satoshi value={$signerTokenBalance || -1} />
+	</Labeled>
+	<Labeled label="Amount">
+		<Input type="number" bind:value={amount} />
+	</Labeled>
+	<Labeled label="To (Bitcoin Address)">
+		<Input bind:value={to} />
+	</Labeled>
+	<Button
+		on:click={async () =>
+			$synthesis.burnSyntheticTokenBTC(
+				0,
+				amount,
+				getPkScript(to, $info.chain),
+				await $symbtc.btcTokenAddress(),
+				clientId
+			)}
+	>
+		Unwrap
+	</Button>
+</ReloadableCard>
