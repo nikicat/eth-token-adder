@@ -43,7 +43,7 @@
 	"dependencies": {
 		"@metamask/jazzicon": "^2.0.0",
 		"@openzeppelin/contracts": "^5.0.2",
-		"@square/svelte-store": "file:../svelte-store",
+		"@square/svelte-store": "github:nikicat/svelte-store",
 		"@sveltejs/adapter-node": "^5.0.1",
 		"@sveltejs/adapter-static": "^3.0.1",
 		"bitcoinjs-lib": "^6.1.5",

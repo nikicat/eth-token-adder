@@ -1,10 +1,9 @@
 <script lang="ts">
-	// @ts-expect-error
-	import { Jazzicon } from 'svelte-ethers-store/components'
 	import { Table, TableBody, TableBodyCell, TableBodyRow } from 'flowbite-svelte'
 	import { signer, provider } from '$lib/contracts'
 	import EtherscanLink from '$lib/EtherscanLink.svelte'
 	import ReloadableCard from '$lib/ReloadableCard.svelte'
+	import Jazzicon from '$lib/Jazzicon.svelte'
 
 	const keyClass = 'px-6 py-4 whitespace-nowrap font-medium text-right'
 </script>
