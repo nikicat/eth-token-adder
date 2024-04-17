@@ -9,7 +9,7 @@
 	let state = store.state
 </script>
 
-<MyCard>
+<MyCard {...$$restProps}>
 	<svelte:fragment slot="title">
 		{title}
 		{#if store.reload}
