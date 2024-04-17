@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Table, TableBody, TableBodyCell, TableBodyRow } from 'flowbite-svelte'
+	import { ethers } from 'ethers'
 	import { signer, provider } from '$lib/contracts'
 	import EtherscanLink from '$lib/EtherscanLink.svelte'
 	import ReloadableCard from '$lib/ReloadableCard.svelte'
@@ -24,11 +25,15 @@
 					<TableBodyCell tdClass={keyClass}>ChainID</TableBodyCell>
 					<TableBodyCell>{network.chainId}</TableBodyCell>
 				</TableBodyRow>
+				<TableBodyRow>
+					<TableBodyCell tdClass={keyClass}>Name</TableBodyCell>
+					<TableBodyCell>{network.name}</TableBodyCell>
+				</TableBodyRow>
 			{/await}
 			{#await $provider.getBalance($signer) then balance}
 				<TableBodyRow>
 					<TableBodyCell tdClass={keyClass}>Balance</TableBodyCell>
-					<TableBodyCell>{balance}</TableBodyCell>
+					<TableBodyCell>{ethers.formatEther(balance)} ETH</TableBodyCell>
 				</TableBodyRow>
 			{/await}
 		</TableBody>
