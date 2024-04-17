@@ -1,7 +1,7 @@
 import { asyncDerived, derived, readable } from '@square/svelte-store'
 import { fixPersisted, logged } from '$lib/utils'
 import { ethers } from "ethers"
-import { SymBtc__factory, SyntERC20__factory, Synthesis__factory } from './symbiosis-contracts-types'
+import { SymBtc__factory, SyntERC20__factory, Synthesis__factory } from '$lib/symbiosis-contracts-types'
 
 export const browserProvider = readable({} as ethers.BrowserProvider, (set) => {
     if (window.ethereum === null) {
