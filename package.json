@@ -49,7 +49,7 @@
 		"bitcoinjs-lib": "^6.1.5",
 		"buffer": "^6.0.3",
 		"eip1193-types": "^0.2.1",
-		"ethers": "^6.11.1",
+		"ethers": "^6.13.1",
 		"flowbite-svelte-icons": "^1.5.0",
 		"openapi-typescript-fetch": "^2.0.0",
 		"swagger-typescript-api": "^13.0.3",
